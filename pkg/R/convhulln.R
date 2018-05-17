@@ -69,8 +69,25 @@
 ##' @export
 ##' @useDynLib geometry
 convhulln <- function (p, options = "Tv", return.non.triangulated.facets = FALSE) {
-  ## Check directory writable
-  tmpdir <- tempdir()
+  #unique temp dir for parallel computations
+  makeRandomString <- function(n=1, lenght=12)
+  {
+    randomString <- c(1:n)                  # initialize vector
+    for (i in 1:n)
+    {
+      randomString[i] <- paste(sample(c(0:9, letters, LETTERS),
+                                      lenght, replace=TRUE),
+                               collapse="")
+    }
+    return(randomString)
+  }
+  
+  tmpdir <- file.path(getwd(),makeRandomString())
+  
+  dir.create(tmpdir)
+  
+  ## Check directory writablet
+  #tmpdir <- tempdir()
   ## R should guarantee the tmpdir is writable, but check in any case
   if (file.access(tmpdir, 2) == -1) {
     stop(paste("Unable to write to R temporary directory", tmpdir, "\n",
@@ -104,5 +121,7 @@ convhulln <- function (p, options = "Tv", return.non.triangulated.facets = FALSE
       options <- paste(options, "Qt")
     }
   }
-  .Call("C_convhulln", p, as.character(options), as.integer(return.non.triangulated.facets), tmpdir, PACKAGE="geometry")
+  a <- .Call("C_convhulln", p, as.character(options), as.integer(return.non.triangulated.facets), tmpdir, PACKAGE="geometry")
+  unlink(tmpdir, recursive = TRUE, force = TRUE)
+  a
 }
