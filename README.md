@@ -4,5 +4,5 @@ This is the development version of the [R geometry package](https://davidcsterra
 To install and test, type the following within R:
 ```
 install.packages("devtools")
-devtools::install_github("davidcsterratt/geometry", subdir="pkg")
+devtools::install_github("fguilhaumon/geometry", subdir="pkg")
 ```
